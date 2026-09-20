@@ -17,7 +17,12 @@ def get_student():
         "year": 3,
         "section": "B"
     })
-
+@app.route('/course')
+def get_course():
+    return jsonify({
+        "course": "IT3120",
+        "program": "BSIT",
+    })
 
 @app.route('/hello')
 def say_hello():
@@ -25,6 +30,13 @@ def say_hello():
 
     return jsonify({
         "message": f"Hello, {name}!"
+    })
+@app.route('/tala')
+def say_tala():
+    name = request.args.get('name', 'Student')
+
+    return jsonify({
+        "message": f"Gwapa si, {name}!"
     })
 
 
