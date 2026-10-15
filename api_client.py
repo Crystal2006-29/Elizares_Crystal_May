@@ -8,7 +8,3 @@ if response.status_code == 200:
 else: 
     print("Request failed.") 
     print("Status Code:", response.status_code)
-
-    git add . 
-git commit -m "Complete Laboratory Activity 5" 
-git push 
