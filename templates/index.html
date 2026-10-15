@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student API Interface</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff0f5;
+            color: #66334d;
+        }
+
+        h1, h2 {
+            color: #d63384;
+        }
+
+        button {
+            padding: 8px 14px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #f8c8dc;
+            color: #66334d;
+            border: 1px solid #e8a3c1;
+            border-radius: 8px;
+        }
+
+        button:hover {
+            background-color: #f3a6c1;
+        }
+
+        input {
+            padding: 8px;
+            border: 1px solid #e8a3c1;
+            border-radius: 5px;
+        }
+
+        #result, #greeting, #course {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #f0b6ce;
+            border-radius: 10px;
+            background-color: white;
+        }
+
+        hr {
+            border: 1px solid #f8c8dc;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Student API Interface</h1>
+
+    <button onclick="loadStudent()">Load Student Information</button>
+    <div id="result"></div>
+
+    <hr>
+
+    <h2>Greeting API</h2>
+
+    <input type="text" id="name" placeholder="Enter your name">
+    <button onclick="sayHello()">Say Hello</button>
+    <div id="greeting"></div>
+
+    <hr>
+
+    <h2>Course API</h2>
+
+    <button onclick="loadCourse()">Load Course Information</button>
+    <div id="course"></div>
+
+    <script>
+        function loadStudent() {
+            fetch('/student')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML =
+                    '<p><b>Student ID:</b> ' + data.student_id + '</p>' +
+                    '<p><b>Name:</b> ' + data.name + '</p>' +
+                    '<p><b>Program:</b> ' + data.program + '</p>' +
+                    '<p><b>Year:</b> ' + data.year + '</p>' +
+                    '<p><b>Section:</b> ' + data.section + '</p>';
+            })
+            .catch(error => {
+                document.getElementById('result').innerHTML =
+                    '<p>Unable to retrieve data.</p>';
+            });
+        }
+
+        function sayHello() {
+            let name = document.getElementById('name').value;
+
+            fetch('/hello?name=' + encodeURIComponent(name))
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('greeting').innerHTML =
+                    '<p>' + data.message + '</p>';
+            })
+            .catch(error => {
+                document.getElementById('greeting').innerHTML =
+                    '<p>Unable to retrieve greeting.</p>';
+            });
+        }
+
+        function loadCourse() {
+            fetch('/course')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('course').innerHTML =
+                    '<p><b>Course:</b> ' + data.course + '</p>' +
+                    '<p><b>Program:</b> ' + data.program + '</p>';
+            })
+            .catch(error => {
+                document.getElementById('course').innerHTML =
+                    '<p>Unable to retrieve course information.</p>';
+            });
+        }
+    </script>
+
+</body>
+</html>
