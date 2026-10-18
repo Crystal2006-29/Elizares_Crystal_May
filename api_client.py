@@ -1,5 +1,5 @@
 import requests 
-url = "https://elizares-crystal-may.onrender.com/course" 
+url = "https://elizares-crystal-may.onrender.com" 
 response = requests.get(url) 
 if response.status_code == 200: 
     data = response.json() 

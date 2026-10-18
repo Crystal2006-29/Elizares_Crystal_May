@@ -1,124 +1,299 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Student API Interface</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students from Database</title>
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 700px;
-            margin: 40px auto;
-            padding: 20px;
-            background-color: #fff0f5;
-            color: #66334d;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #fff0f6, #f0e6ff, #ffe4f1);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #59445f;
         }
 
-        h1, h2 {
-            color: #d63384;
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.94);
+            padding: 35px;
+            border-radius: 25px;
+            box-shadow: 0 12px 35px rgba(190, 130, 190, 0.18);
+            border: 2px solid #ffe0ef;
+            animation: fadeIn 0.8s ease;
         }
 
-        button {
-            padding: 8px 14px;
-            margin: 5px;
-            cursor: pointer;
-            background-color: #f8c8dc;
-            color: #66334d;
-            border: 1px solid #e8a3c1;
-            border-radius: 8px;
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
-        button:hover {
-            background-color: #f3a6c1;
+        .header .icon {
+            font-size: 55px;
+            margin-bottom: 12px;
+            animation: float 3s ease-in-out infinite;
         }
 
-        input {
-            padding: 8px;
-            border: 1px solid #e8a3c1;
-            border-radius: 5px;
+        h1 {
+            color: #bd6fa3;
+            font-size: 30px;
+            margin-bottom: 12px;
         }
 
-        #result, #greeting, #course {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #f0b6ce;
-            border-radius: 10px;
-            background-color: white;
+        .subtitle {
+            color: #8d79a8;
+            font-size: 15px;
+            line-height: 1.8;
         }
 
         hr {
-            border: 1px solid #f8c8dc;
-            margin: 30px 0;
+            border: none;
+            height: 4px;
+            background: linear-gradient(to right, #ffc4df, #cdb4ff, #ffc4df);
+            border-radius: 10px;
+            margin-bottom: 28px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #f5b8d2, #c9b1ff);
+            color: #603f72;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 16px rgba(201, 160, 220, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-4px) scale(1.03);
+            background: linear-gradient(135deg, #f7a9ce, #bda0ff);
+            box-shadow: 0 10px 22px rgba(190, 130, 190, 0.35);
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        #studentList {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .student-card {
+            background: linear-gradient(145deg, #fff5fa, #f7f1ff);
+            border: 1px solid #f3d5ed;
+            border-left: 6px solid #d9a7e8;
+            border-radius: 18px;
+            padding: 22px;
+            transition: all 0.3s ease;
+            overflow-wrap: anywhere;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .student-card:nth-child(odd) {
+            border-left-color: #f3b5d1;
+        }
+
+        .student-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px rgba(191, 143, 207, 0.2);
+            background: linear-gradient(145deg, #ffeaf4, #eee4ff);
+        }
+
+        .student-card h3 {
+            color: #b765a0;
+            font-size: 19px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #e7c7e7;
+        }
+
+        .student-card p {
+            font-size: 14px;
+            color: #766483;
+            margin: 11px 0;
+            line-height: 1.6;
+        }
+
+        .student-card strong {
+            color: #9c70b4;
+        }
+
+        .status {
+            text-align: center;
+            color: #a185b3;
+            padding: 25px 15px;
+            grid-column: 1 / -1;
+            background: #fff5fa;
+            border: 1px dashed #e8c6e8;
+            border-radius: 15px;
+            line-height: 1.7;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #ad8cb7;
+            font-size: 12px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-7px);
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 12px;
+            }
+
+            .container {
+                padding: 24px 16px;
+                border-radius: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .header .icon {
+                font-size: 45px;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            #studentList {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <h1>Student API Interface</h1>
+    <div class="container">
 
-    <button onclick="loadStudent()">Load Student Information</button>
-    <div id="result"></div>
+        <div class="header">
+            <div class="icon">🎓</div>
+            <h1>Student Information System</h1>
+            <p class="subtitle">
+                Students from Database<br>
+                View and explore student records from your database.
+            </p>
+        </div>
 
-    <hr>
+        <hr>
 
-    <h2>Greeting API</h2>
+        <div class="button-container">
+            <button onclick="loadStudents()">📋 Load Students</button>
+        </div>
 
-    <input type="text" id="name" placeholder="Enter your name">
-    <button onclick="sayHello()">Say Hello</button>
-    <div id="greeting"></div>
+        <div id="studentList">
+            <p class="status">
+                🌸 Click "Load Students" to display student records. 💜
+            </p>
+        </div>
 
-    <hr>
+        <footer>
+            Made with ♡ | Student Information System
+        </footer>
 
-    <h2>Course API</h2>
-
-    <button onclick="loadCourse()">Load Course Information</button>
-    <div id="course"></div>
+    </div>
 
     <script>
-        function loadStudent() {
-            fetch('/student')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('result').innerHTML =
-                    '<p><b>Student ID:</b> ' + data.student_id + '</p>' +
-                    '<p><b>Name:</b> ' + data.name + '</p>' +
-                    '<p><b>Program:</b> ' + data.program + '</p>' +
-                    '<p><b>Year:</b> ' + data.year + '</p>' +
-                    '<p><b>Section:</b> ' + data.section + '</p>';
-            })
-            .catch(error => {
-                document.getElementById('result').innerHTML =
-                    '<p>Unable to retrieve data.</p>';
-            });
+        function loadStudents() {
+            const studentList = document.getElementById('studentList');
+
+            studentList.innerHTML =
+                '<p class="status">💜 Loading student records...</p>';
+
+            fetch('/students')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load students');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!Array.isArray(data)) {
+                        throw new Error('Invalid API response');
+                    }
+
+                    if (data.length === 0) {
+                        studentList.innerHTML =
+                            '<p class="status">🌸 No student records found.</p>';
+                        return;
+                    }
+
+                    let output = '';
+
+                    data.forEach(student => {
+                        output += `
+                            <div class="student-card">
+                                <h3>👤 ${escapeHTML(student.name ?? 'N/A')}</h3>
+                                <p><strong>Student ID:</strong>
+                                    ${escapeHTML(student.student_id ?? 'N/A')}</p>
+                                <p><strong>Program:</strong>
+                                    ${escapeHTML(student.program ?? 'N/A')}</p>
+                                <p><strong>Year:</strong>
+                                    ${escapeHTML(student.year ?? 'N/A')}</p>
+                                <p><strong>Section:</strong>
+                                    ${escapeHTML(student.section ?? 'N/A')}</p>
+                            </div>
+                        `;
+                    });
+
+                    studentList.innerHTML = output;
+                })
+                .catch(error => {
+                    studentList.innerHTML =
+                        '<p class="status">Unable to retrieve student records. Please check your Flask server and database.</p>';
+                    console.error(error);
+                });
         }
 
-        function sayHello() {
-            let name = document.getElementById('name').value;
-
-            fetch('/hello?name=' + encodeURIComponent(name))
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('greeting').innerHTML =
-                    '<p>' + data.message + '</p>';
-            })
-            .catch(error => {
-                document.getElementById('greeting').innerHTML =
-                    '<p>Unable to retrieve greeting.</p>';
-            });
-        }
-
-        function loadCourse() {
-            fetch('/course')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('course').innerHTML =
-                    '<p><b>Course:</b> ' + data.course + '</p>' +
-                    '<p><b>Program:</b> ' + data.program + '</p>';
-            })
-            .catch(error => {
-                document.getElementById('course').innerHTML =
-                    '<p>Unable to retrieve course information.</p>';
-            });
+        function escapeHTML(value) {
+            return String(value).replace(/[&<>"']/g, character => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[character]);
         }
     </script>
 
