@@ -1,3 +1,4 @@
+
 import sqlite3
 
 # Connect to the database
@@ -12,7 +13,8 @@ CREATE TABLE IF NOT EXISTS students (
     name TEXT NOT NULL,
     program TEXT NOT NULL,
     year INTEGER NOT NULL,
-    section TEXT NOT NULL
+    section TEXT NOT NULL,
+    source TEXT DEFAULT 'Local'
 )
 ''')
 

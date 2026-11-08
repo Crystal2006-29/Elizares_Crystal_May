@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +22,7 @@
         }
 
         .container {
-            max-width: 850px;
+            max-width: 1000px;
             margin: auto;
         }
 
@@ -30,9 +31,7 @@
             margin-bottom: 25px;
         }
 
-        header h1,
-        .section h2,
-        .result h3 {
+        header h1, .section h2, .result h3 {
             color: #9b4d96;
             margin-bottom: 12px;
         }
@@ -85,6 +84,70 @@
             font-size: 15px;
         }
 
+        .update-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px 14px;
+            margin-top: 12px;
+        }
+
+        .update-grid input {
+            max-width: none;
+            margin-top: 0;
+        }
+
+        .update-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .update-actions button {
+            margin-top: 0;
+        }
+
+        .clear-button {
+            background: #243bdb;
+            color: white;
+        }
+
+        .edit-button {
+            background: #087bdc;
+            color: white;
+            margin: 0;
+            padding: 8px 12px;
+        }
+
+        .records-table-wrap {
+            overflow-x: auto;
+            margin-top: 18px;
+        }
+
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 720px;
+            color: #222;
+            background: white;
+        }
+
+        .records-table th,
+        .records-table td {
+            border: 1px solid #c8c8c8;
+            padding: 10px 8px;
+            text-align: left;
+        }
+
+        .records-table th {
+            background: #dce8e6;
+        }
+
+        .editing-note {
+            margin-top: 12px;
+            font-weight: 600;
+        }
+
         .result {
             display: none;
             background: #fff5fa;
@@ -114,10 +177,17 @@
             padding: 15px;
             color: #75577f;
         }
+
+        @media (max-width: 600px) {
+            .update-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 
 <body>
+
 <div class="container">
 
     <header>
@@ -129,35 +199,44 @@
     <div class="section">
         <h2>1. API</h2>
         <p>Display the API message.</p>
+
         <button onclick="loadAPI('/api', 'apiResult', this)">
             Load API
         </button>
+
         <div id="apiResult" class="result"></div>
     </div>
 
     <!-- 2. Student Information -->
     <div class="section">
         <h2>2. Student Information</h2>
+
         <button onclick="loadAPI('/student', 'studentResult', this)">
             Load Student Information
         </button>
+
         <div id="studentResult" class="result"></div>
     </div>
 
     <!-- 3. Hello -->
     <div class="section">
         <h2>3. Hello</h2>
+
         <input type="text" id="studentName" placeholder="Enter your name">
+
         <button onclick="sayHello(this)">Say Hello</button>
+
         <div id="helloResult" class="result"></div>
     </div>
 
     <!-- 4. Course Information -->
     <div class="section">
         <h2>4. Course Information</h2>
+
         <button onclick="loadAPI('/course', 'courseResult', this)">
             Load Course Information
         </button>
+
         <div id="courseResult" class="result"></div>
     </div>
 
@@ -166,12 +245,24 @@
         <h2>5. Add Student</h2>
 
         <form id="studentForm">
-            <input type="text" id="student_id" placeholder="Student ID" required>
-            <input type="text" id="name" placeholder="Full Name" required>
-            <input type="text" id="program" placeholder="Program (e.g. BSIT)" required>
-            <input type="number" id="year" placeholder="Year Level" min="1" required>
-            <input type="text" id="section" placeholder="Section (e.g. B)" required>
-            <button type="submit" id="addButton">Add Student</button>
+            <input type="text" id="student_id"
+                   placeholder="Student ID" required>
+
+            <input type="text" id="name"
+                   placeholder="Full Name" required>
+
+            <input type="text" id="program"
+                   placeholder="Program (e.g. BSIT)" required>
+
+            <input type="number" id="year"
+                   placeholder="Year Level" min="1" max="4" required>
+
+            <input type="text" id="section"
+                   placeholder="Section (e.g. B)" required>
+
+            <button type="submit" id="addButton">
+                Add Student
+            </button>
         </form>
 
         <div id="addResult" class="result"></div>
@@ -180,8 +271,13 @@
     <!-- 6. View Students -->
     <div class="section">
         <h2>6. Students from Database</h2>
+
         <p>Source: Your local students.db database.</p>
-        <button onclick="loadStudents(this)">Load Students</button>
+
+        <button onclick="loadStudents(this)">
+            Load Students
+        </button>
+
         <div id="studentsResult" class="result"></div>
     </div>
 
@@ -189,65 +285,100 @@
     <div class="section">
         <h2>7. Update Student</h2>
 
-        <input type="number" id="updateId" placeholder="Database ID" min="1">
-        <input type="text" id="updateStudentId" placeholder="Student ID">
-        <input type="text" id="updateName" placeholder="Full Name">
-        <input type="text" id="updateProgram" placeholder="Program">
-        <input type="number" id="updateYear" placeholder="Year" min="1">
-        <input type="text" id="updateSection" placeholder="Section">
+        <p>Click Edit beside a student record to load its existing information.</p>
 
-        <button onclick="updateStudent(this)">Update Student</button>
+        <input type="hidden" id="editDatabaseId">
+
+        <div class="update-grid">
+            <input type="text" id="editStudentId" placeholder="Student ID">
+            <input type="text" id="editName" placeholder="Full Name">
+            <input type="text" id="editProgram" placeholder="Program">
+            <input type="number" id="editYear" placeholder="Year" min="1" max="4">
+            <input type="text" id="editSection" placeholder="Section">
+        </div>
+
+        <div class="update-actions">
+            <button onclick="saveStudentUpdate(this)">
+                Update Student
+            </button>
+
+            <button class="clear-button" onclick="clearStudentUpdate()">
+                Clear
+            </button>
+        </div>
+
+        <p id="editingNote" class="editing-note">
+            No student selected.
+        </p>
+
         <div id="updateResult" class="result"></div>
+
+        <h3 style="margin-top:22px;">Student Records</h3>
+
+        <div class="records-table-wrap">
+            <table class="records-table">
+                <thead>
+                    <tr>
+                        <th>Database ID</th>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Program</th>
+                        <th>Year</th>
+                        <th>Section</th>
+                        <th>Source</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="updateRecordsBody">
+                    <tr>
+                        <td colspan="8">Loading student records...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- 8. Delete Student -->
     <div class="section">
         <h2>8. Delete Student</h2>
-        <input type="number" id="deleteId" placeholder="Database ID" min="1">
-        <button onclick="deleteStudent(this)">Delete Student</button>
+
+        <input type="number" id="deleteId"
+               placeholder="Database ID" min="1">
+
+        <button onclick="deleteStudent(this)">
+            Delete Student
+        </button>
+
         <div id="deleteResult" class="result"></div>
     </div>
 
     <!-- 13. My Records -->
     <div class="section">
         <h2>13. My Records</h2>
+
         <p><strong>Source:</strong> My Own Database (students.db)</p>
-        <button onclick="loadMyRecords(this)">Load My Records</button>
-        <div id="myRecordsResult" class="result"></div>
+
+        <button onclick="loadMyRecords(this)">
+            Load My Records
+        </button>
+
+        <div id="myRecordsResult" class="result show">
+            Loading my database records...
+        </div>
     </div>
 
     <!-- 14. Classmate's Records -->
     <div class="section">
         <h2>14. Classmate's Records</h2>
+
         <p><strong>Source:</strong> Classmate's API and Database</p>
+
         <button onclick="loadClassmateRecords(this)">
             Load Classmate's Records
         </button>
+
         <div id="classmateResult" class="result"></div>
-    </div>
-
-    <!-- 15. Record Sources -->
-    <div class="section">
-        <h2>15. Record Sources</h2>
-        <p>View where each set of student records comes from.</p>
-        <button onclick="loadRecordSources(this)">
-            View Record Sources
-        </button>
-        <div id="recordSourcesResult" class="result"></div>
-    </div>
-
-    <!-- 16. Database Independence -->
-    <div class="section">
-        <h2>16. Database Independence</h2>
-        <p>
-            My database and my classmate's database are separate.
-            Changes to my records do not automatically change
-            my classmate's records.
-        </p>
-        <button onclick="checkDatabaseIndependence(this)">
-            Verify Database Independence
-        </button>
-        <div id="independenceResult" class="result"></div>
     </div>
 
     <footer>
@@ -257,7 +388,8 @@
 </div>
 
 <script>
-    // Display API information
+
+    // 1-4. Load API Information
     async function loadAPI(endpoint, resultId, button) {
         const result = document.getElementById(resultId);
 
@@ -267,7 +399,9 @@
 
         try {
             const response = await fetch(endpoint);
-            const contentType = response.headers.get("content-type") || "";
+
+            const contentType =
+                response.headers.get("content-type") || "";
 
             const data = contentType.includes("application/json")
                 ? await response.json()
@@ -282,13 +416,15 @@
                 : data;
 
         } catch (error) {
-            result.textContent = "Unable to load information: " + error.message;
+            result.textContent =
+                "Unable to load information: " + error.message;
         } finally {
             button.disabled = false;
         }
     }
 
-    // Say Hello
+
+    // 3. Say Hello
     function sayHello(button) {
         const name = document.getElementById("studentName").value.trim();
 
@@ -299,7 +435,8 @@
         );
     }
 
-    // Display student records as cards
+
+    // Display student records
     function displayStudents(result, students, headingText) {
         result.replaceChildren();
 
@@ -309,7 +446,7 @@
 
         if (!Array.isArray(students)) {
             const message = document.createElement("p");
-            message.textContent = "The API did not return a list of students.";
+            message.textContent = "No student list received.";
             result.appendChild(message);
             return;
         }
@@ -325,18 +462,21 @@
             const card = document.createElement("div");
             card.className = "student-card";
 
-            [
+            const fields = [
                 ["Database ID", student.id],
                 ["Student ID", student.student_id],
                 ["Name", student.name],
                 ["Program", student.program],
                 ["Year", student.year],
                 ["Section", student.section]
-            ].forEach(([label, value]) => {
+            ];
+
+            fields.forEach(([label, value]) => {
                 const line = document.createElement("div");
                 const strong = document.createElement("strong");
 
                 strong.textContent = label + ": ";
+
                 line.appendChild(strong);
                 line.appendChild(
                     document.createTextNode(String(value ?? "N/A"))
@@ -349,12 +489,14 @@
         });
     }
 
-    // 6. Load local students
+
+    // 6. Load Students
     async function loadStudents(button) {
         const result = document.getElementById("studentsResult");
 
         result.classList.add("show");
         result.textContent = "Loading your local records...";
+
         button.disabled = true;
 
         try {
@@ -365,14 +507,20 @@
                 throw new Error(data.error || "Request failed");
             }
 
-            displayStudents(result, data, "My Local Database Records");
+            displayStudents(
+                result,
+                data,
+                "My Local Database Records"
+            );
 
         } catch (error) {
-            result.textContent = "Unable to load local records: " + error.message;
+            result.textContent =
+                "Unable to load local records: " + error.message;
         } finally {
             button.disabled = false;
         }
     }
+
 
     // 13. My Records
     async function loadMyRecords(button) {
@@ -380,7 +528,10 @@
 
         result.classList.add("show");
         result.textContent = "Loading my database records...";
-        button.disabled = true;
+
+        if (button) {
+            button.disabled = true;
+        }
 
         try {
             const response = await fetch("/students");
@@ -390,22 +541,30 @@
                 throw new Error(data.error || "Request failed");
             }
 
-            displayStudents(result, data, "Source: My Own students.db");
+            displayStudents(
+                result,
+                data,
+                "Source: My Own students.db"
+            );
 
         } catch (error) {
-            result.textContent = "Unable to load my records: " + error.message;
+            result.textContent =
+                "Unable to load my records: " + error.message;
         } finally {
-            button.disabled = false;
+            if (button) {
+                button.disabled = false;
+            }
         }
     }
 
+
     // 14. Classmate's Records
-    // Flask fetches the classmate API from the backend.
     async function loadClassmateRecords(button) {
         const result = document.getElementById("classmateResult");
 
         result.classList.add("show");
         result.textContent = "Loading classmate's records...";
+
         button.disabled = true;
 
         try {
@@ -413,7 +572,9 @@
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || data.details || "Request failed");
+                throw new Error(
+                    data.error || data.details || "Request failed"
+                );
             }
 
             const students = Array.isArray(data)
@@ -434,62 +595,8 @@
         }
     }
 
-    // 15. Record Sources
-    async function loadRecordSources(button) {
-        const result = document.getElementById("recordSourcesResult");
 
-        result.classList.add("show");
-        result.textContent = "Loading record sources...";
-        button.disabled = true;
-
-        try {
-            const response = await fetch("/api/record-sources");
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || "Request failed");
-            }
-
-            result.replaceChildren();
-
-            const heading = document.createElement("h3");
-            heading.textContent = "Record Sources";
-            result.appendChild(heading);
-
-            const myRecords = document.createElement("p");
-            myRecords.textContent =
-                "My Records: " + (data.my_records?.source || "Not available");
-
-            const myEndpoint = document.createElement("p");
-            myEndpoint.textContent =
-                "My Endpoint: " + (data.my_records?.endpoint || "/students");
-
-            const classmateRecords = document.createElement("p");
-            classmateRecords.textContent =
-                "Classmate's Records: " +
-                (data.classmate_records?.source || "Not available");
-
-            const classmateEndpoint = document.createElement("p");
-            classmateEndpoint.textContent =
-                "Classmate Endpoint: " +
-                (data.classmate_records?.endpoint || "/api/classmate-records");
-
-            result.append(
-                myRecords,
-                myEndpoint,
-                classmateRecords,
-                classmateEndpoint
-            );
-
-        } catch (error) {
-            result.textContent =
-                "Unable to load record sources: " + error.message;
-        } finally {
-            button.disabled = false;
-        }
-    }
-
-    // Add Student
+    // 5. Add Student
     document.getElementById("studentForm").addEventListener(
         "submit",
         async function(event) {
@@ -526,16 +633,11 @@
                 }
 
                 result.textContent =
-                    (data.message || "Student added successfully.") +
-                    (data.id != null ? " Database ID: " + data.id : "");
+                    data.message || "Student added successfully!";
 
                 event.target.reset();
 
-                await loadMyRecords(
-                    document.querySelector(
-                        'button[onclick="loadMyRecords(this)"]'
-                    )
-                );
+                await refreshAllRecords();
 
             } catch (error) {
                 result.textContent = "Error: " + error.message;
@@ -545,62 +647,253 @@
         }
     );
 
-    // Update Student
-    async function updateStudent(button) {
-        const id = document.getElementById("updateId").value.trim();
+
+    // Refresh all local student records
+    async function refreshAllRecords() {
+        await loadMyRecords(null);
+        await loadUpdateRecords();
+
+        const studentsButton = document.querySelector(
+            'button[onclick="loadStudents(this)"]'
+        );
+
+        if (studentsButton) {
+            await loadStudents(studentsButton);
+        }
+    }
+
+
+    // Selected student's original information
+    let selectedStudentOriginal = null;
+
+
+    // Load records into Update Student table
+    async function loadUpdateRecords() {
+        const tbody = document.getElementById("updateRecordsBody");
+
+        tbody.innerHTML =
+            '<tr><td colspan="8">Loading student records...</td></tr>';
+
+        try {
+            const response = await fetch("/students");
+            const students = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    students.error || "Unable to load students."
+                );
+            }
+
+            tbody.replaceChildren();
+
+            if (!Array.isArray(students) || students.length === 0) {
+                tbody.innerHTML =
+                    '<tr><td colspan="8">No student records found.</td></tr>';
+                return;
+            }
+
+            students.forEach(student => {
+                const row = document.createElement("tr");
+
+                [
+                    student.id,
+                    student.student_id,
+                    student.name,
+                    student.program,
+                    student.year,
+                    student.section,
+                    student.source || "Local"
+                ].forEach(value => {
+                    const cell = document.createElement("td");
+                    cell.textContent = value ?? "";
+                    row.appendChild(cell);
+                });
+
+                const actionCell = document.createElement("td");
+                const editButton = document.createElement("button");
+
+                editButton.type = "button";
+                editButton.className = "edit-button";
+                editButton.textContent = "Edit";
+
+                editButton.addEventListener("click", function() {
+                    editStudentRecord(student);
+                });
+
+                actionCell.appendChild(editButton);
+                row.appendChild(actionCell);
+
+                tbody.appendChild(row);
+            });
+
+        } catch (error) {
+            tbody.innerHTML = "";
+
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+
+            cell.colSpan = 8;
+            cell.textContent =
+                "Unable to load records: " + error.message;
+
+            row.appendChild(cell);
+            tbody.appendChild(row);
+        }
+    }
+
+
+    // Edit existing student record
+    function editStudentRecord(student) {
+        selectedStudentOriginal = {
+            student_id: String(student.student_id ?? ""),
+            name: String(student.name ?? ""),
+            program: String(student.program ?? ""),
+            year: String(student.year ?? ""),
+            section: String(student.section ?? "")
+        };
+
+        document.getElementById("editDatabaseId").value = student.id;
+
+        document.getElementById("editStudentId").value =
+            selectedStudentOriginal.student_id;
+
+        document.getElementById("editName").value =
+            selectedStudentOriginal.name;
+
+        document.getElementById("editProgram").value =
+            selectedStudentOriginal.program;
+
+        document.getElementById("editYear").value =
+            selectedStudentOriginal.year;
+
+        document.getElementById("editSection").value =
+            selectedStudentOriginal.section;
+
+        document.getElementById("editingNote").textContent =
+            "Editing student record ID: " + student.id;
+
+        document.getElementById("updateResult").classList.remove("show");
+    }
+
+
+    // Clear Update Form
+    function clearStudentUpdate() {
+        [
+            "editDatabaseId",
+            "editStudentId",
+            "editName",
+            "editProgram",
+            "editYear",
+            "editSection"
+        ].forEach(id => {
+            document.getElementById(id).value = "";
+        });
+
+        document.getElementById("editingNote").textContent =
+            "No student selected.";
+
+        document.getElementById("updateResult").classList.remove("show");
+        document.getElementById("updateResult").textContent = "";
+
+        selectedStudentOriginal = null;
+    }
+
+
+    // Update only changed student information
+    async function saveStudentUpdate(button) {
+        const databaseId =
+            document.getElementById("editDatabaseId").value;
+
         const result = document.getElementById("updateResult");
-        const yearValue = document.getElementById("updateYear").value;
 
         result.classList.add("show");
 
-        const studentData = {
-            student_id: document.getElementById("updateStudentId").value.trim(),
-            name: document.getElementById("updateName").value.trim(),
-            program: document.getElementById("updateProgram").value.trim(),
-            year: Number(yearValue),
-            section: document.getElementById("updateSection").value.trim()
+        if (!databaseId || !selectedStudentOriginal) {
+            result.textContent =
+                "Please click Edit beside a student record first.";
+            return;
+        }
+
+        const current = {
+            student_id: document.getElementById("editStudentId").value.trim(),
+            name: document.getElementById("editName").value.trim(),
+            program: document.getElementById("editProgram").value.trim(),
+            year: document.getElementById("editYear").value.trim(),
+            section: document.getElementById("editSection").value.trim()
         };
 
+        if (Object.values(current).some(value => value === "")) {
+            result.textContent =
+                "Please make sure all fields contain information.";
+            return;
+        }
+
         if (
-            !id ||
-            !studentData.student_id ||
-            !studentData.name ||
-            !studentData.program ||
-            !yearValue ||
-            !studentData.section
+            !Number.isInteger(Number(current.year)) ||
+            Number(current.year) < 1 ||
+            Number(current.year) > 4
         ) {
-            result.textContent = "Please complete all fields.";
+            result.textContent =
+                "Please enter a valid year level (1 to 4).";
+            return;
+        }
+
+        const payload = {};
+
+        Object.keys(current).forEach(field => {
+            if (current[field] !== selectedStudentOriginal[field]) {
+                payload[field] = field === "year"
+                    ? Number(current[field])
+                    : current[field];
+            }
+        });
+
+        if (Object.keys(payload).length === 0) {
+            result.textContent =
+                "No changes detected. Please edit at least one field.";
             return;
         }
 
         button.disabled = true;
-        result.textContent = "Updating student...";
+        result.textContent = "Updating student record...";
 
         try {
             const response = await fetch(
-                "/api/students/" + encodeURIComponent(id),
+                "/api/students/" + encodeURIComponent(databaseId),
                 {
-                    method: "PUT",
+                    method: "PATCH",
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(studentData)
+                    body: JSON.stringify(payload)
                 }
             );
 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || "Update failed");
+                throw new Error(data.error || "Update failed.");
             }
 
-            result.textContent = data.message || "Student updated successfully.";
+            result.textContent =
+                data.message || "Student record updated successfully!";
 
-            await loadMyRecords(
-                document.querySelector(
-                    'button[onclick="loadMyRecords(this)"]'
-                )
+            await refreshAllRecords();
+
+            const recordsResponse = await fetch("/students");
+            const records = await recordsResponse.json();
+
+            const updatedStudent = records.find(
+                student => String(student.id) === String(databaseId)
             );
+
+            if (updatedStudent) {
+                editStudentRecord(updatedStudent);
+            }
+
+            result.classList.add("show");
+            result.textContent =
+                data.message || "Student record updated successfully!";
 
         } catch (error) {
             result.textContent = "Error: " + error.message;
@@ -609,7 +902,8 @@
         }
     }
 
-    // Delete Student
+
+    // 8. Delete Student
     async function deleteStudent(button) {
         const id = document.getElementById("deleteId").value.trim();
         const result = document.getElementById("deleteResult");
@@ -643,14 +937,18 @@
                 throw new Error(data.error || "Delete failed");
             }
 
-            result.textContent = data.message || "Student deleted successfully.";
+            result.textContent =
+                data.message || "Student deleted successfully.";
+
             document.getElementById("deleteId").value = "";
 
-            await loadMyRecords(
-                document.querySelector(
-                    'button[onclick="loadMyRecords(this)"]'
-                )
-            );
+            if (
+                document.getElementById("editDatabaseId").value === id
+            ) {
+                clearStudentUpdate();
+            }
+
+            await refreshAllRecords();
 
         } catch (error) {
             result.textContent = "Error: " + error.message;
@@ -659,53 +957,12 @@
         }
     }
 
-    // 16. Check Database Independence
-    async function checkDatabaseIndependence(button) {
-        const result = document.getElementById("independenceResult");
 
-        result.classList.add("show");
-        result.textContent = "Checking database independence...";
-        button.disabled = true;
+    // Automatically load records when website opens
+    document.addEventListener("DOMContentLoaded", function() {
+        refreshAllRecords();
+    });
 
-        try {
-            const response = await fetch("/api/database-independence");
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || data.details || "Request failed");
-            }
-
-            result.replaceChildren();
-
-            const heading = document.createElement("h3");
-            heading.textContent = "Database Independence Check";
-
-            const status = document.createElement("p");
-            status.textContent =
-                "Local database reachable: " +
-                (data.local_database_reachable ? "Yes" : "No");
-
-            const count = document.createElement("p");
-            count.textContent =
-                "Local records: " + (data.local_record_count ?? "Unknown");
-
-            const message = document.createElement("p");
-            message.textContent = data.message ||
-                "Your local records and classmate's records use separate data sources.";
-
-            const note = document.createElement("p");
-            note.textContent =
-                "This check does not modify either database.";
-
-            result.append(heading, status, count, message, note);
-
-        } catch (error) {
-            result.textContent =
-                "Database check failed: " + error.message;
-        } finally {
-            button.disabled = false;
-        }
-    }
 </script>
 
 </body>
