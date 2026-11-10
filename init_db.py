@@ -1,11 +1,17 @@
-
 import sqlite3
 
-# Connect to the database
+# ==========================================
+# DATABASE CONNECTION
+# ==========================================
+
 conn = sqlite3.connect('students.db')
 cursor = conn.cursor()
 
-# Create the students table
+
+# ==========================================
+# CREATE STUDENTS TABLE
+# ==========================================
+
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS students (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -18,36 +24,79 @@ CREATE TABLE IF NOT EXISTS students (
 )
 ''')
 
-# Clear existing records to avoid duplicates when rerunning
+
+# ==========================================
+# CLEAR EXISTING RECORDS
+# ==========================================
+
 cursor.execute('DELETE FROM students')
 
-# Student records
+
+# ==========================================
+# STUDENT RECORDS
+# ==========================================
+
 students = [
-    ('24-00379', 'Michaella Pedotim', 'BSIT', 4, 'B'),
-    ('24-00283', 'Seth Claire Palec', 'BSIT', 3, 'B'),
-    ('24-00301', 'Gella Gale', 'BSIT', 3, 'B'),
-    ('26-00212', 'Iren Joy Daquita', 'BSIT', 1, 'C'),
-    ('25-00012', 'Rachel Ann Lorca', 'BSIT', 2, 'B')
+    ('24-00379', 'Michaella Pedotim', 'BSIT', 4, 'B', 'Local'),
+    ('24-00283', 'Seth Claire Palec', 'BSIT', 3, 'B', 'Local'),
+    ('24-00301', 'Gella Gale', 'BSIT', 3, 'B', 'Local'),
+    ('26-00212', 'Iren Joy Daquita', 'BSIT', 1, 'C', 'Local'),
+    ('25-00012', 'Rachel Ann Lorca', 'BSIT', 2, 'B', 'Local')
 ]
 
-# Insert student records
+
+# ==========================================
+# INSERT STUDENT RECORDS
+# ==========================================
+
 cursor.executemany('''
-INSERT INTO students (student_id, name, program, year, section)
-VALUES (?, ?, ?, ?, ?)
+INSERT INTO students (
+    student_id,
+    name,
+    program,
+    year,
+    section,
+    source
+)
+VALUES (?, ?, ?, ?, ?, ?)
 ''', students)
 
-# Save changes
+
+# ==========================================
+# SAVE CHANGES
+# ==========================================
+
 conn.commit()
 
-# Display all student records
+
+# ==========================================
+# DISPLAY ALL STUDENT RECORDS
+# ==========================================
+
 cursor.execute('SELECT * FROM students')
 records = cursor.fetchall()
 
-print('Students from Database:')
-for student in records:
-    print(student)
+print('\n======================================')
+print('       STUDENTS FROM DATABASE')
+print('======================================')
 
-# Close database connection
+for student in records:
+    print('ID:', student[0])
+    print('Student ID:', student[1])
+    print('Name:', student[2])
+    print('Program:', student[3])
+    print('Year:', student[4])
+    print('Section:', student[5])
+    print('Source:', student[6])
+    print('--------------------------------------')
+
+
+# ==========================================
+# CLOSE DATABASE CONNECTION
+# ==========================================
+
 conn.close()
 
 print('\nDatabase created successfully!')
+print('Source field added successfully!')
+print('All student records have been saved as Local.')
